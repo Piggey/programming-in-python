@@ -1,13 +1,13 @@
-import argparse
+from argparse import ArgumentParser
 
-class ArgParser():
+class ArgParser:
 
     def __init__(self):
-        self.parser = argparse.ArgumentParser(add_help=True)
+        self.parser = ArgumentParser(add_help=True)
 
-    def parse_all_arguments(self):
-        self.create_args()
-        self.args = self.parser.parse_args()
+    def get_parsed_arguments(self):
+        self.__create_args()
+        return self.parser.parse_args()
 
     def __create_args(self):
         self.parser.add_argument(
