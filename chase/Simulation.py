@@ -21,27 +21,29 @@ class Simulation:
         self.end_of_sim:       bool = False
         self.max_rounds:        int = 50
 
-        # try reading from config file 
+        # try reading simulation variables from config file 
         if (self.init_args.config):
             config_filename = self.init_args.config[0]
-            config = ConfigParser().read(config_filename)
+            self.__read_from_config(config_filename)
 
-            new_init_pos_limit = float(config['Terrain']['InitPosLimit'])
-            if (new_init_pos_limit < 0):
-                raise ValueError(f'InitPosLimit in config file {config_filename} is less than zero.')
+    def __read_from_config(self, config_filename: str):
+        config = ConfigParser().read(config_filename)
 
-            new_sheep_move_dist = float(config['Movement']['SheepMoveDist'])
-            if (new_sheep_move_dist < 0):
-                raise ValueError(f'SheepMoveDist in config file {config_filename} is less than zero.')
+        new_init_pos_limit = float(config['Terrain']['InitPosLimit'])
+        if (new_init_pos_limit < 0):
+            raise ValueError(f'InitPosLimit in config file {config_filename} is less than zero.')
 
-            new_wolf_move_dist = float(config['Movement']['WolfMoveDist'])
-            if (new_wolf_move_dist < 0):    
-                raise ValueError(f'WolfMoveDist in config file {config_filename} is less than zero.')
+        new_sheep_move_dist = float(config['Movement']['SheepMoveDist'])
+        if (new_sheep_move_dist < 0):
+            raise ValueError(f'SheepMoveDist in config file {config_filename} is less than zero.')
 
-            self.init_pos_limit = new_init_pos_limit
-            self.sheep_move_dist = new_sheep_move_dist
-            self.wolf_move_dist = new_wolf_move_dist
+        new_wolf_move_dist = float(config['Movement']['WolfMoveDist'])
+        if (new_wolf_move_dist < 0):    
+            raise ValueError(f'WolfMoveDist in config file {config_filename} is less than zero.')
 
+        self.init_pos_limit = new_init_pos_limit
+        self.sheep_move_dist = new_sheep_move_dist
+        self.wolf_move_dist = new_wolf_move_dist
 
     def __run_simulation_step(self):
         pass
