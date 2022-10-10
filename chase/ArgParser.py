@@ -9,7 +9,7 @@ class ArgParser():
         self.create_args()
         self.args = self.parser.parse_args()
 
-    def create_args(self):
+    def __create_args(self):
         self.parser.add_argument(
             '-c', '--config',
             help='an auxiliary configuration file',
