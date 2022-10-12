@@ -5,6 +5,7 @@ from configparser import ConfigParser
 from random import uniform
 from os import mkdir
 import logging
+from json import dump
 
 class Simulation:
     init_pos_limit: float
@@ -21,15 +22,40 @@ class Simulation:
         self.reset()
 
     def start(self):
+        locations = []
         for rnd in range(self.max_rounds):
+            # cache animals' positions
+            locations.append(self.__cache_animals_position(rnd))
+
             # stop if theres no sheep left
             num_alive_sheep = sum(x is not None for x in self.sheep_flock)
             if (num_alive_sheep == 0):
-                return
+                break
 
+            # run simulation
             hunted_sheep_index, sheep_eaten = self.__run_simulation_step()
             self.__print_simulation_info(rnd + 1, num_alive_sheep, hunted_sheep_index, sheep_eaten)
 
+        self.__export_animal_locations(self.output_dir + self.position_file, locations)
+
+    def __cache_animals_position(self, rnd: int) -> dict:
+        rnd_locations = {}
+        rnd_locations['round_no'] = rnd + 1
+
+        rnd_locations['wolf_pos'] = self.wolf.get_current_position()
+
+        round_sheep_positions = []
+        for sheep in self.sheep_flock:
+            if (sheep is None):
+                round_sheep_positions.append(None)
+            else:
+                round_sheep_positions.append(sheep.get_current_position())
+
+        rnd_locations['sheep_pos'] = round_sheep_positions
+
+
+        return rnd_locations
+        
     def reset(self):
         # set everything to default 
         self.init_pos_limit:  float = 10.0
@@ -42,6 +68,7 @@ class Simulation:
 
         self.output_dir:        str = ''
         self.log_file:          str = 'chase.log'
+        self.position_file:     str = 'pos.json'
 
         # simulation variables from config file 
         if (self.init_args.config):
@@ -137,8 +164,9 @@ class Simulation:
 
         return hunted_sheep_index, sheep_eaten
 
-    def __export_animal_locations(self, filename: str):
-        pass
+    def __export_animal_locations(self, filename: str, locations: list):
+        with open(filename, 'w') as f:
+            dump(locations, f, indent=4)
 
     def __export_sheep_count(self, filename: str):
         pass

@@ -11,6 +11,9 @@ class Wolf:
         self.pos = Point2D(pos_x, pos_y)
         self.move_dist = move_dist
 
+    def get_current_position(self) -> (float, float):
+        return (self.pos.x, self.pos.y)
+
     def move(self, sheep_flock: list) -> (int, bool):
         # find closest sheep
         min_dist = inf
