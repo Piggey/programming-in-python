@@ -8,11 +8,8 @@ setup(
     author='Dawid Sośnia',
     author_email='236653@edu.p.lodz.pl',
     license='GPL-3.0 license',
-    packages=['chase'],
-    # install_requires=['mpi4py>=2.0',
-    #                   'numpy',                     
-    #                   ],
-
+    packages=[ 'chase' ],
+    install_requires=[ 'point2d' ],
     classifiers=[
         'Intended Audience :: Science/Research',
         'Programming Language :: Python :: 3.10',
