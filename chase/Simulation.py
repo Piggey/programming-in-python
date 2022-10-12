@@ -6,6 +6,7 @@ from random import uniform
 from os import mkdir
 import logging
 from json import dump
+from csv import writer
 
 class Simulation:
     init_pos_limit: float
@@ -23,12 +24,17 @@ class Simulation:
 
     def start(self):
         locations = []
+        alive = []
         for rnd in range(self.max_rounds):
             # cache animals' positions
             locations.append(self.__cache_animals_position(rnd))
 
-            # stop if theres no sheep left
             num_alive_sheep = sum(x is not None for x in self.sheep_flock)
+
+            # cache number of alive sheep
+            alive.append([rnd + 1, num_alive_sheep])
+
+            # stop if theres no sheep left
             if (num_alive_sheep == 0):
                 break
 
@@ -37,6 +43,7 @@ class Simulation:
             self.__print_simulation_info(rnd + 1, num_alive_sheep, hunted_sheep_index, sheep_eaten)
 
         self.__export_animal_locations(self.output_dir + self.position_file, locations)
+        self.__export_sheep_count(self.output_dir + self.alive_file, alive)
 
     def __cache_animals_position(self, rnd: int) -> dict:
         rnd_locations = {}
@@ -69,6 +76,7 @@ class Simulation:
         self.output_dir:        str = ''
         self.log_file:          str = 'chase.log'
         self.position_file:     str = 'pos.json'
+        self.alive_file:        str = 'alive.csv'
 
         # simulation variables from config file 
         if (self.init_args.config):
@@ -168,5 +176,8 @@ class Simulation:
         with open(filename, 'w') as f:
             dump(locations, f, indent=4)
 
-    def __export_sheep_count(self, filename: str):
-        pass
+    def __export_sheep_count(self, filename: str, data: list):
+        with open(filename, 'w') as f:
+            csv_writer = writer(f)
+            csv_writer.writerow(['round_no', 'alive_sheep'])
+            csv_writer.writerows(data)
