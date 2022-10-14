@@ -15,7 +15,7 @@ class Wolf:
 
     def get_current_position(self) -> (float, float):
         logging.debug('calling Wolf.get_current_position()')
-        logging.debug('function Wolf.get_current_position() returned ', (self.pos.x, self.pos.y))
+        logging.debug(f'function Wolf.get_current_position() returned {str([self.pos.x, self.pos.y])}')
         return (self.pos.x, self.pos.y)
 
     def move(self, sheep_flock: list) -> (int, bool):
@@ -38,8 +38,8 @@ class Wolf:
         if (self.move_dist >= min_dist):
             self.pos = sheep_flock[closest_sheep.sheep_id].pos
 
-            logging.info('Wolf has eaten sheep #', closest_sheep.sheep_id)
-            logging.debug('function Wolf.move() returned ', (closest_sheep.sheep_id, True))
+            logging.info(f'Wolf has eaten sheep #{closest_sheep.sheep_id}')
+            logging.debug(f'function Wolf.move() returned {str([closest_sheep.sheep_id, True])}')
             return (closest_sheep.sheep_id, True)
 
         # else move towards the targeted sheep 
@@ -47,5 +47,5 @@ class Wolf:
         direction.r = 1 # normalize the vector
         self.pos += direction * self.move_dist
 
-        logging.debug('function Wolf.move() returned ', (closest_sheep.sheep_id, False))
+        logging.debug(f'function Wolf.move() returned {str([closest_sheep.sheep_id, False])}')
         return (closest_sheep.sheep_id, False)

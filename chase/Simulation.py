@@ -35,7 +35,6 @@ class Simulation:
     is_running: bool 
 
     def __init__(self, simulation_arguments: list):
-        logging.debug('calling Simulation.__init__()')
         self.init_args = simulation_arguments
         self.reset()
 
@@ -63,30 +62,8 @@ class Simulation:
 
         self.__export_animal_locations(self.output_dir + self.position_file, locations)
         self.__export_sheep_count(self.output_dir + self.alive_file, alive)
-
-    def __cache_animals_position(self, rnd: int) -> dict:
-        logging.debug('calling Simulation.__cache_animals_position()')
-
-        rnd_locations = {}
-        rnd_locations['round_no'] = rnd + 1
-
-        rnd_locations['wolf_pos'] = self.wolf.get_current_position()
-
-        round_sheep_positions = []
-        for sheep in self.sheep_flock:
-            if (sheep is None):
-                round_sheep_positions.append(None)
-            else:
-                round_sheep_positions.append(sheep.get_current_position())
-
-        rnd_locations['sheep_pos'] = round_sheep_positions
-
-        logging.debug('function Simulation.__cache_animals_position() returned ', rnd_locations)
-        return rnd_locations
         
     def reset(self):
-        logging.debug('calling Simulation.reset()')
-
         # set everything to default 
         self.init_pos_limit:  float = 10.0
         self.sheep_move_dist: float = 0.5
@@ -118,12 +95,21 @@ class Simulation:
 
         # logging
         if (self.init_args.log):
+            level: int
+            if (self.init_args.log[0] == 'DEBUG'):      level = logging.DEBUG
+            elif (self.init_args.log[0] == 'INFO'):     level = logging.INFO
+            elif (self.init_args.log[0] == 'WARNING'):  level = logging.WARNING
+            elif (self.init_args.log[0] == 'ERROR'):    level = logging.ERROR
+            elif (self.init_args.log[0] == 'CRITICAL'): level = logging.CRITICAL
+
             logging.basicConfig(
-                level=self.init_args.log[0],
+                level=level,
                 filename=self.output_dir + self.log_file,
                 filemode='w',
-                format='%(name)s - %(levelname)s - %(message)s'
+                format='%(levelname)s: %(message)s'
             )
+            logging.debug('calling Simulation.__init__()')
+            logging.debug('calling Simulation.reset()')
 
         # max number of rounds
         if (self.init_args.rounds):
@@ -146,6 +132,26 @@ class Simulation:
             sheep = Sheep(i, x, y, self.sheep_move_dist)
 
             self.sheep_flock.append(sheep)
+
+    def __cache_animals_position(self, rnd: int) -> dict:
+        logging.debug('calling Simulation.__cache_animals_position()')
+
+        rnd_locations = {}
+        rnd_locations['round_no'] = rnd + 1
+
+        rnd_locations['wolf_pos'] = self.wolf.get_current_position()
+
+        round_sheep_positions = []
+        for sheep in self.sheep_flock:
+            if (sheep is None):
+                round_sheep_positions.append(None)
+            else:
+                round_sheep_positions.append(sheep.get_current_position())
+
+        rnd_locations['sheep_pos'] = round_sheep_positions
+
+        logging.debug(f'function Simulation.__cache_animals_position() returned {str(rnd_locations)}')
+        return rnd_locations
 
     def __print_simulation_info(self, current_round: int, alive_sheep: int, hunted_sheep_index: int, sheep_eaten: bool):
         logging.debug('calling Simulation.__print_simulation_info()')
@@ -208,7 +214,7 @@ class Simulation:
         if (sheep_eaten):
             self.sheep_flock[hunted_sheep_index] = None
 
-        logging.debug('function Simulation.__run_simulation_step() returned ', (hunted_sheep_index, sheep_eaten))
+        logging.debug(f'function Simulation.__run_simulation_step() returned {str([hunted_sheep_index, sheep_eaten])}')
         return hunted_sheep_index, sheep_eaten
 
     def __export_animal_locations(self, filename: str, locations: list):

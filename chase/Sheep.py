@@ -15,7 +15,7 @@ class Sheep:
 
     def get_current_position(self) -> (float, float):
         logging.debug('calling Sheep.get_current_position()')
-        logging.debug('function Sheep.get_current_position() returned ', (self.pos.x, self.pos.y))
+        logging.debug(f'function Sheep.get_current_position() returned {str([self.pos.x, self.pos.y])}')
         return (self.pos.x, self.pos.y)
 
     def move(self):
