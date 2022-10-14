@@ -35,10 +35,13 @@ class Simulation:
     is_running: bool 
 
     def __init__(self, simulation_arguments: list):
+        logging.debug('calling Simulation.__init__()')
         self.init_args = simulation_arguments
         self.reset()
 
     def start(self):
+        logging.debug('calling Simulation.start()')
+
         locations = []
         alive = []
         for rnd in range(self.max_rounds):
@@ -62,6 +65,8 @@ class Simulation:
         self.__export_sheep_count(self.output_dir + self.alive_file, alive)
 
     def __cache_animals_position(self, rnd: int) -> dict:
+        logging.debug('calling Simulation.__cache_animals_position()')
+
         rnd_locations = {}
         rnd_locations['round_no'] = rnd + 1
 
@@ -76,10 +81,12 @@ class Simulation:
 
         rnd_locations['sheep_pos'] = round_sheep_positions
 
-
+        logging.debug('function Simulation.__cache_animals_position() returned ', rnd_locations)
         return rnd_locations
         
     def reset(self):
+        logging.debug('calling Simulation.reset()')
+
         # set everything to default 
         self.init_pos_limit:  float = 10.0
         self.sheep_move_dist: float = 0.5
@@ -141,6 +148,8 @@ class Simulation:
             self.sheep_flock.append(sheep)
 
     def __print_simulation_info(self, current_round: int, alive_sheep: int, hunted_sheep_index: int, sheep_eaten: bool):
+        logging.debug('calling Simulation.__print_simulation_info()')
+        
         print(f'ROUND {current_round}:')
         print(f"\twolf's position: [{self.wolf.pos.x:.3f}, {self.wolf.pos.y:.3f}]")
 
@@ -157,19 +166,24 @@ class Simulation:
             getch()
 
     def __read_from_config(self, config_filename: str):
+        logging.debug('calling Simulation.__read_from_config()')
+
         config = ConfigParser()
         config.read(config_filename)
 
         new_init_pos_limit = float(config['Terrain']['InitPosLimit'])
         if (new_init_pos_limit < 0):
+            logging.error(f'InitPosLimit in config file {config_filename} is less than zero')
             raise ValueError(f'InitPosLimit in config file {config_filename} is less than zero.')
 
         new_sheep_move_dist = float(config['Movement']['SheepMoveDist'])
         if (new_sheep_move_dist < 0):
+            logging.error(f'SheepMoveDist in config file {config_filename} is less than zero')
             raise ValueError(f'SheepMoveDist in config file {config_filename} is less than zero.')
 
         new_wolf_move_dist = float(config['Movement']['WolfMoveDist'])
         if (new_wolf_move_dist < 0):    
+            logging.error(f'WolfMoveDist in config file {config_filename} is less than zero')
             raise ValueError(f'WolfMoveDist in config file {config_filename} is less than zero.')
 
         self.init_pos_limit = new_init_pos_limit
@@ -177,11 +191,14 @@ class Simulation:
         self.wolf_move_dist = new_wolf_move_dist
 
     def __run_simulation_step(self):
+        logging.debug('calling Simulation.__run_simulation_step()')
+
         # move sheep flock 
-        for sheep in self.sheep_flock:
+        for i, sheep in enumerate(self.sheep_flock):
             if (sheep is None):
                 continue
 
+            logging.info(f'moving sheep #{i}')
             sheep.move()
 
         # move wolf
@@ -191,14 +208,21 @@ class Simulation:
         if (sheep_eaten):
             self.sheep_flock[hunted_sheep_index] = None
 
+        logging.debug('function Simulation.__run_simulation_step() returned ', (hunted_sheep_index, sheep_eaten))
         return hunted_sheep_index, sheep_eaten
 
     def __export_animal_locations(self, filename: str, locations: list):
+        logging.debug('calling Simulation.__export_animal_locations()')
+
         with open(filename, 'w') as f:
+            logging.info(f'dumping animal locations to {filename}')
             dump(locations, f, indent=4)
 
     def __export_sheep_count(self, filename: str, data: list):
+        logging.debug('calling Simulation.__export_sheep_count()')
+
         with open(filename, 'w') as f:
+            logging.info(f'dumping number of alive sheep to {filename}')
             csv_writer = writer(f)
             csv_writer.writerow(['round_no', 'alive_sheep'])
             csv_writer.writerows(data)

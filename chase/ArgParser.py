@@ -1,15 +1,23 @@
 from argparse import ArgumentParser
+import logging
 
 class ArgParser:
 
     def __init__(self):
+        logging.debug('calling ArgParser.__init__()')
         self.parser = ArgumentParser(add_help=True)
 
     def get_parsed_arguments(self):
+        logging.debug('calling ArgParser.get_parsed_arguments()')
         self.__create_args()
-        return self.parser.parse_args()
+
+        args = self.parser.parse_args()
+        logging.info('found arguments: ', args)
+        logging.debug('function ArgParser.get_parsed_arguments() returned ', args)
+        return args
 
     def __create_args(self):
+        logging.debug('calling ArgParser.__create_args()')
         self.parser.add_argument(
             '-c', '--config',
             help='an auxiliary configuration file',
