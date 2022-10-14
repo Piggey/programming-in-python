@@ -157,7 +157,8 @@ class Simulation:
             getch()
 
     def __read_from_config(self, config_filename: str):
-        config = ConfigParser().read(config_filename)
+        config = ConfigParser()
+        config.read(config_filename)
 
         new_init_pos_limit = float(config['Terrain']['InitPosLimit'])
         if (new_init_pos_limit < 0):
