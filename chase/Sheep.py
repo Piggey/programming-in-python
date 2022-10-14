@@ -13,6 +13,8 @@ class Sheep:
         self.pos = Point2D(pos_x, pos_y)
         self.move_dist = move_dist
 
+        logging.info(f'Sheep #{sheep_id} initialized at ({pos_x}, {pos_y}) with move_dist of {move_dist}')
+
     def get_current_position(self) -> (float, float):
         logging.debug('calling Sheep.get_current_position()')
         logging.debug(f'function Sheep.get_current_position() returned {str([self.pos.x, self.pos.y])}')
@@ -29,4 +31,5 @@ class Sheep:
         ]
 
         direction = choice(possible_directions)
+        logging.info(f'Sheep #{self.sheep_id} moved in {direction.cartesian()} direction')
         self.pos += direction * self.move_dist

@@ -10,8 +10,11 @@ class Wolf:
     
     def __init__(self, pos_x: float, pos_y: float, move_dist: float):
         logging.debug('calling Wolf.__init__()')
+
         self.pos = Point2D(pos_x, pos_y)
         self.move_dist = move_dist
+
+        logging.info(f'Wolf object initialized at ({pos_x}, {pos_y}) with move_dist of {move_dist}')
 
     def get_current_position(self) -> (float, float):
         logging.debug('calling Wolf.get_current_position()')
@@ -34,6 +37,8 @@ class Wolf:
                 min_dist = dist
                 closest_sheep = sheep
 
+        logging.info(f'closest to Wolf is Sheep #{closest_sheep.sheep_id} at {min_dist}')
+
         # eat sheep if within move_dist
         if (self.move_dist >= min_dist):
             self.pos = sheep_flock[closest_sheep.sheep_id].pos
@@ -47,5 +52,6 @@ class Wolf:
         direction.r = 1 # normalize the vector
         self.pos += direction * self.move_dist
 
+        logging.info(f'Wolf has moved towards Sheep #{closest_sheep.sheep_id} direction')
         logging.debug(f'function Wolf.move() returned {str([closest_sheep.sheep_id, False])}')
         return (closest_sheep.sheep_id, False)

@@ -49,6 +49,8 @@ class Simulation:
 
             num_alive_sheep = sum(x is not None for x in self.sheep_flock)
 
+            logging.info(f'Round {rnd} started. Alive sheep: {num_alive_sheep}')
+
             # cache number of alive sheep
             alive.append([rnd + 1, num_alive_sheep])
 
@@ -204,10 +206,11 @@ class Simulation:
             if (sheep is None):
                 continue
 
-            logging.info(f'moving sheep #{i}')
+            logging.info(f'moving Sheep #{i}')
             sheep.move()
 
         # move wolf
+        logging.info('moving Wolf')
         hunted_sheep_index, sheep_eaten = self.wolf.move(self.sheep_flock)
 
         # remove sheep if eaten
