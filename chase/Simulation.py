@@ -8,6 +8,22 @@ import logging
 from json import dump
 from csv import writer
 
+# a way to continue with pressing any key 
+try:
+    # Win32
+    from msvcrt import getch
+except ImportError:
+    # UNIX
+    def getch():
+        import sys, tty, termios
+        fd = sys.stdin.fileno()
+        old = termios.tcgetattr(fd)
+        try:
+            tty.setraw(fd)
+            return sys.stdin.read(1)
+        finally:
+            termios.tcsetattr(fd, termios.TCSADRAIN, old)
+
 class Simulation:
     init_pos_limit: float
     sheep_move_dist: float 
@@ -135,6 +151,10 @@ class Simulation:
             print(f"\twolf is currently chasing sheep #{hunted_sheep_index}")
 
         print(f'\talive sheep: {alive_sheep}')
+
+        if (self.wait):
+            print('Simulation stopped. Press any key to continue')
+            getch()
 
     def __read_from_config(self, config_filename: str):
         config = ConfigParser().read(config_filename)
