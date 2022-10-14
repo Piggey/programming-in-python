@@ -1,4 +1,4 @@
-from Sheep import Sheep
+from .Sheep import Sheep
 
 from point2d import Point2D
 from math import inf

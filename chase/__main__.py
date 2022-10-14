@@ -1,5 +1,5 @@
-from Simulation import Simulation
-from ArgParser import ArgParser
+from .Simulation import Simulation
+from .ArgParser import ArgParser
 
 
 def main():

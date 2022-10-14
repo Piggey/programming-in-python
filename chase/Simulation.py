@@ -1,5 +1,5 @@
-from Sheep import Sheep
-from Wolf import Wolf
+from .Sheep import Sheep
+from .Wolf import Wolf
 
 from configparser import ConfigParser
 from random import uniform
